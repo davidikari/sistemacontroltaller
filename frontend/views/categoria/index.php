@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+
     <p>
         <?= Html::a(Yii::t('app', 'Create Categoria'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
@@ -36,6 +37,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'urlCreator' => function ($action, Categoria $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
+                /*ttribute' => 'id_categoria',
+                'value' => function (Categoria $model){
+                    return $model->gerIdCategoria();
+
+                }*/
+
             ],
         ],
     ]); ?>

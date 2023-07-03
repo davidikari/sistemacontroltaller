@@ -7,6 +7,10 @@ use frontend\models\CajaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use frontend\models\Categoria;
+use frontend\models\Cliente;
+use Yii;
+
 
 /**
  * CajaController implements the CRUD actions for Caja model.
@@ -68,6 +72,33 @@ class CajaController extends Controller
     public function actionCreate()
     {
         $model = new Caja();
+        $model->fecha = date('Y-m-d H:i:s');
+
+        $model->tipo = Yii::$app->request->get('dato');
+
+        $modelCaja = new Categoria();
+        $modelCaja = Categoria::find()->all();
+        $descripcion = [];
+        foreach ($modelCaja as $value) {
+            $firstWord = strstr($value->descripcion, ' ', true);
+            if ($model->tipo == 1 && $firstWord == 'gasto') {
+                $descripcion[$value->id] = $value->descripcion;
+            }
+            if ($value->descripcion == 'alquiler') {
+                $descripcion[$value->id] = $value->descripcion;
+            }
+            if ($value->descripcion == 'ingreso' && $model->tipo == 0){
+                $descripcion[$value->id] = $value->descripcion;
+            }
+
+        }
+
+        $modelCliente = new Cliente();
+        $modelCliente = Cliente::find()->all();
+        $clientesDesplegable = [];
+        foreach ($modelCliente as $cliente){
+            $clientesDesplegable[$cliente->id] = $cliente->nombre.' '.$cliente->apellido;
+        }
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -79,6 +110,8 @@ class CajaController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'descripcion' => $descripcion,
+            'clientesDesplegable' => $clientesDesplegable,
         ]);
     }
 

@@ -15,6 +15,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use frontend\models\Caja;
 
 /**
  * Site controller
@@ -75,7 +76,75 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $modelCaja = new Caja();
+        $modelCaja = Caja::find()->all();
+        $saldo = 0;
+        $ingreso = 0;
+        $egreso = 0;
+        $gastoFijo = 0;
+        $gastoHabitual = 0;
+        $gastoTaller = 0;
+        $alquiler = 0;
+        $alquilerEgreso = 0;
+        $alquilerIngreso = 0;
+        $saldoTaller = 0;
+        $ingresoTotalTaller = 0;
+        foreach ($modelCaja as $value) {
+            
+            if ($value->tipo == 0) {
+                $saldo = $saldo+$value->monto;
+                $ingreso = $ingreso+$value->monto;
+                if ($value->id_categoria == 4) {
+                    $alquiler = $alquiler+$value->monto;
+                    $alquilerIngreso = $alquilerIngreso+$value->monto;
+
+                }
+                if ($value->id_categoria == 5){
+                    $saldoTaller = $saldoTaller+$value->monto;
+                    $ingresoTotalTaller = $ingresoTotalTaller+$value->monto;
+                }
+            }else{
+               $saldo = $saldo-$value->monto;
+               $egreso = $egreso+$value->monto;
+               if ($value->id_categoria == 4) {
+                    $alquiler = $alquiler-$value->monto;
+                    $alquilerEgreso = $alquilerEgreso+$value->monto;
+
+                    
+                }
+                if ($value->id_categoria == 3){
+                    $saldoTaller = $saldoTaller-$value->monto;
+                }
+
+            }
+            if ($value->id_categoria == 2) {
+                $gastoFijo = $gastoFijo+$value->monto;
+            }
+            if ($value->id_categoria == 1) {
+                $gastoHabitual = $gastoHabitual+$value->monto;
+            }
+            if ($value->id_categoria == 3) {
+                $gastoTaller = $gastoTaller+$value->monto;    
+            }
+
+
+        }
+
+        return $this->render('index', [
+            'saldo' => $saldo,
+            'ingreso' => $ingreso,
+            'egreso' => $egreso,
+            'gastoFijo' => $gastoFijo,
+            'gastoHabitual' => $gastoHabitual,
+            'gastoTaller' => $gastoTaller,
+            'alquiler' => $alquiler,
+            'alquilerIngreso' => $alquilerIngreso,
+            'alquilerEgreso' => $alquilerEgreso,
+            'saldoTaller' => $saldoTaller,
+            'ingresoTotalTaller' => $ingresoTotalTaller,
+
+        ]);
+
     }
 
     /**
