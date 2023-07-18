@@ -11,11 +11,9 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="caja-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_form', [
         'model' => $model,
-        'descripcion' => $descripcion,
+        'catDesplegable' => $catDesplegable,
         'clientesDesplegable' => $clientesDesplegable,
     ]) ?>
 

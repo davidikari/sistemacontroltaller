@@ -76,27 +76,17 @@ class CajaController extends Controller
 
         $model->tipo = Yii::$app->request->get('dato');
 
-        $modelCaja = new Categoria();
-        $modelCaja = Categoria::find()->all();
-        $descripcion = [];
-        foreach ($modelCaja as $value) {
-            $firstWord = strstr($value->descripcion, ' ', true);
-            if ($model->tipo == 1 && $firstWord == 'gasto') {
-                $descripcion[$value->id] = $value->descripcion;
-            }
-            if ($value->descripcion == 'alquiler') {
-                $descripcion[$value->id] = $value->descripcion;
-            }
-            if ($value->descripcion == 'ingreso' && $model->tipo == 0){
-                $descripcion[$value->id] = $value->descripcion;
-            }
-
+        $modelCategoria = new Categoria();
+        $modelCategoria = Categoria::find()->all();
+        $catDesplegable = [];
+        foreach($modelCategoria as $cat){
+            $catDesplegable[$cat['id']] = $cat['descripcion'];
         }
 
         $modelCliente = new Cliente();
         $modelCliente = Cliente::find()->all();
         $clientesDesplegable = [];
-        foreach ($modelCliente as $cliente){
+        foreach($modelCliente as $cliente){
             $clientesDesplegable[$cliente->id] = $cliente->nombre.' '.$cliente->apellido;
         }
 
@@ -110,7 +100,7 @@ class CajaController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'descripcion' => $descripcion,
+            'catDesplegable' => $catDesplegable,
             'clientesDesplegable' => $clientesDesplegable,
         ]);
     }
