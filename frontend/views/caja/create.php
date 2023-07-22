@@ -9,6 +9,8 @@ $this->title = Yii::t('app', 'Create Caja');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Cajas'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<hr>
+<br>
 <div class="caja-create">
 
     <?= $this->render('_form', [

@@ -1,6 +1,10 @@
 
 <?php
 use yii\helpers\Html;
+use yii\grid\GridView;
+use yii\data\ArrayDataProvider;
+
+
 
 /** @var yii\web\View $this */
 
@@ -10,9 +14,9 @@ $this->title = 'My Yii Application';
    
     <div class="body-content">
         <div>
-            <?= Html::a(Yii::t('app', 'ingreso'), ['caja/create', 'dato' => 0], ['class' => 'btn btn-success']) ?>
+            <?= Html::a(Yii::t('app', 'Ingreso'), ['caja/create', 'dato' => 0], ['class' => 'btn btn-success']) ?>
 
-           <?= Html::a(Yii::t('app', 'egreso'), ['caja/create', 'dato' => 1], ['class' => 'btn btn-success']) ?>
+           <?= Html::a(Yii::t('app', 'Egreso'), ['caja/create', 'dato' => 1], ['class' => 'btn btn-success']) ?>
 
         </div>
         <hr>
@@ -22,9 +26,9 @@ $this->title = 'My Yii Application';
             <?php 
 
             $dataProvider = new \yii\data\ArrayDataProvider([
-    'allModels' => $totales,
-    'pagination' => false,
-]);
+                'allModels' => $totales,
+                'pagination' => false,
+            ]);
 
 echo \yii\grid\GridView::widget([
     'dataProvider' => $dataProvider,
@@ -56,6 +60,53 @@ echo \yii\grid\GridView::widget([
 ]);
 
              ?>
+
+        </div>
+
+
+        <div>
+          <?php
+
+
+
+// Configuración de la GridView
+/*echo GridView::widget([
+    'dataProvider' => $dataProvider,
+    'layout' => "{items}\n{pager}", // Opcional: ajusta el diseño según tus necesidades
+    'columns' => [
+        'cetegoria',
+        'Ingreso',
+        'Saldo',
+        // ... Agrega aquí más columnas según tus datos
+
+        // Columna de acciones con estilo responsivo
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '{view} {update} {delete}',
+            'contentOptions' => ['class' => 'actions-column'],
+            'buttons' => [
+                'view' => function ($url, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
+                        'title' => 'Ver',
+                    ]);
+                },
+                'update' => function ($url, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                        'title' => 'Editar',
+                    ]);
+                },
+                'delete' => function ($url, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+                        'title' => 'Eliminar',
+                        'data-confirm' => '¿Estás seguro de eliminar este elemento?',
+                        'data-method' => 'post',
+                    ]);
+                },
+            ],
+        ],
+    ],
+]);*/
+?>
 
         </div>
     </div>

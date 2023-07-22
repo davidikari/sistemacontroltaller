@@ -33,6 +33,7 @@ class Caja extends \yii\db\ActiveRecord
             [['monto'], 'required'],
             [['monto', 'tipo', 'id_categoria', 'id_cliente'], 'integer'],
             [['fecha'], 'safe'],
+            [['detalle'], 'string', 'max' => 255],
         ];
     }
 
@@ -48,6 +49,7 @@ class Caja extends \yii\db\ActiveRecord
             'id_categoria' => Yii::t('app', 'Id Categoria'),
             'id_cliente' => Yii::t('app', 'Id Cliente'),
             'fecha' => Yii::t('app', 'Fecha'),
+            'detalle' => Yii::t('app', 'Detalle'),
         ];
     }
 }

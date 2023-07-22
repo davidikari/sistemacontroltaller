@@ -16,7 +16,8 @@ if ($model->tipo == 1) {
 }
 
 ?>
-
+<hr>
+<br>
 <div class="caja-form">
 
     <?php $form = ActiveForm::begin(); ?>
@@ -31,6 +32,8 @@ if ($model->tipo == 1) {
     <?= $form->field($model, 'id_cliente')->dropDownList($clientesDesplegable, ['prompt' => 'Seleccione un cliente']); ?>
 
     <?= $form->field($model, 'fecha')->textInput() ?>
+    <?= $form->field($model, 'detalle')->textarea(['rows' => 4]) ?>
+
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
