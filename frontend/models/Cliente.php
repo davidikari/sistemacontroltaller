@@ -29,8 +29,8 @@ class Cliente extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['telefono'], 'integer'],
-            [['nombre', 'apellido'], 'string', 'max' => 20],
+            
+            [['telefono','nombre', 'apellido'], 'string', 'max' => 20],
             [['descripcion'], 'string', 'max' => 255],
         ];
     }
