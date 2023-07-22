@@ -24,14 +24,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            'fecha',
 
-            'id',
+            //'id',
             'monto',
             'tipo',
             'id_categoria',
             'id_cliente',
-            'fecha',
+            
+            'detalle',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Caja $model, $key, $index, $column) {

@@ -19,6 +19,7 @@ class CajaSearch extends Caja
         return [
             [['id', 'monto', 'tipo', 'id_categoria', 'id_cliente'], 'integer'],
             [['fecha'], 'safe'],
+            [['detalle'], 'string', 'max' => 255],
         ];
     }
 
@@ -64,6 +65,7 @@ class CajaSearch extends Caja
             'id_categoria' => $this->id_categoria,
             'id_cliente' => $this->id_cliente,
             'fecha' => $this->fecha,
+            'detalle' => $this->detalle,
         ]);
 
         return $dataProvider;

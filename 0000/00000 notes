@@ -1,0 +1,2 @@
+//////// agregar detalle a ingreso o egreso de caja////////
+./yii migrate/create add_detalle_column_to_caja_table --fields="detalle:string(255)"
