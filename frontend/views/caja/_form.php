@@ -27,7 +27,15 @@ if ($model->tipo == 1) {
 
     <?= $form->field($model, 'tipo')->hiddenInput()->label(false) ?>
 
-    <?= $form->field($model, 'id_categoria')->dropDownList($catDesplegable, ['prompt' => 'Seleccione una categoria']); ?>
+    <?= $form->field($model, 'id_categoria')->dropDownList(
+    $catDesplegable,
+        [
+            'prompt' => [
+                'text' => 'Seleccione una categoría', // Texto que se mostrará en el prompt
+                'options' => ['value' => ''] // Valor del prompt (generalmente se deja como cadena vacía)
+            ]
+        ]
+    ); ?>
 
     <?php if ($model->tipo == 0) { ?>
 
