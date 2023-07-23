@@ -82,7 +82,7 @@ class CajaController extends Controller
         foreach($modelCategoria as $cat){
             $catDesplegable[$cat['id']] = $cat['descripcion'];
         }
-
+        //var_dump($catDesplegable); die();
         $modelCliente = new Cliente();
         $modelCliente = Cliente::find()->all();
         $clientesDesplegable = [];
