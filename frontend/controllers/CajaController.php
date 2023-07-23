@@ -116,12 +116,32 @@ class CajaController extends Controller
     {
         $model = $this->findModel($id);
 
+
+        $modelCategoria = new Categoria();
+        $modelCategoria = Categoria::find()->all();
+        $catDesplegable = [];
+        foreach($modelCategoria as $cat){
+            $catDesplegable[$cat['id']] = $cat['descripcion'];
+        }
+
+        $modelCliente = new Cliente();
+        $modelCliente = Cliente::find()->all();
+        $clientesDesplegable = [];
+        foreach($modelCliente as $cliente){
+            $clientesDesplegable[$cliente->id] = $cliente->nombre.' '.$cliente->apellido;
+        }
+
+
+
+
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'catDesplegable' => $catDesplegable,
+            'clientesDesplegable' => $clientesDesplegable,
         ]);
     }
 
