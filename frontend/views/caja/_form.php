@@ -21,18 +21,24 @@ if ($model->tipo == 1) {
 <div class="caja-form">
 
     <?php $form = ActiveForm::begin(); ?>
+    
 
     <?= $form->field($model, 'monto')->textInput() ?>
 
     <?= $form->field($model, 'tipo')->hiddenInput()->label(false) ?>
 
-
     <?= $form->field($model, 'id_categoria')->dropDownList($catDesplegable, ['prompt' => 'Seleccione una categoria']); ?>
+
+    <?php if ($model->tipo == 0) { ?>
 
     <?= $form->field($model, 'id_cliente')->dropDownList($clientesDesplegable, ['prompt' => 'Seleccione un cliente']); ?>
 
+    <?php } ?>
+    
     <?= $form->field($model, 'fecha')->textInput() ?>
+
     <?= $form->field($model, 'detalle')->textarea(['rows' => 4]) ?>
+
 
 
     <div class="form-group">
