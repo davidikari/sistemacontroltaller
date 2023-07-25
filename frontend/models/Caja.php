@@ -40,6 +40,7 @@ class Caja extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    
     public function attributeLabels()
     {
         return [
@@ -52,4 +53,15 @@ class Caja extends \yii\db\ActiveRecord
             'detalle' => Yii::t('app', 'Detalle'),
         ];
     }
+
+    public function getCategoria()
+    {
+        return $this->hasOne(Categoria::className(), ['id' => 'id_categoria']);
+    }
+
+    public function getCliente()
+    {
+        return $this->hasOne(Cliente::className(), ['id' => 'id_cliente']);
+    }
 }
+

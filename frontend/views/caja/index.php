@@ -25,13 +25,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             'fecha',
-
             //'id',
             'monto',
-            'tipo',
-            'id_categoria',
-            'id_cliente',
-            
+            [
+                'attribute' => 'tipo',
+                'value' => function ($model) {
+                    return $model->tipo === 0 ? 'Ingreso' : 'Egreso';
+                },
+            ],
+            [
+                'attribute' => 'id_categoria',
+                'value' => 'categoria.descripcion',
+            ],
+            [
+                'attribute' => 'id_cliente',
+                'value' => 'cliente.nombre'
+            ],
             'detalle',
             [
                 'class' => ActionColumn::className(),
