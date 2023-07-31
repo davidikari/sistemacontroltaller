@@ -82,9 +82,6 @@ class SiteController extends Controller
 
         $totales = [];
         foreach($modelCategorias as $categoria){
-            /*$nombreEgreso = 'Egreso'.$categoria['descripcion'];
-            $nombreIngreso = 'Ingreso'.$categoria['descripcion'];
-            $saldo = 'Saldo'.$categoria['descripcion'];*/
             $categoriaArray = [];
             $querySum = Caja::find()
                 ->select('SUM(monto) AS total')
@@ -103,12 +100,6 @@ class SiteController extends Controller
             $totales[$categoria['descripcion']] = $categoriaArray;
             
         }
-
-
-       /* echo('<pre>');
-        var_dump($totales); 
-        echo('</pre>');die();*/
-
         return $this->render('index', [
             'totales' => $totales,
         ]);

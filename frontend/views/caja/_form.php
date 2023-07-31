@@ -16,21 +16,38 @@ if ($model->tipo == 1) {
 }
 
 ?>
-
+<hr>
+<br>
 <div class="caja-form">
 
     <?php $form = ActiveForm::begin(); ?>
+    
 
     <?= $form->field($model, 'monto')->textInput() ?>
 
     <?= $form->field($model, 'tipo')->hiddenInput()->label(false) ?>
 
+    <?= $form->field($model, 'id_categoria')->dropDownList(
+    $catDesplegable,
+        [
+            'prompt' => [
+                'text' => 'Seleccione una categoría', // Texto que se mostrará en el prompt
+                'options' => ['value' => ''] // Valor del prompt (generalmente se deja como cadena vacía)
+            ]
+        ]
+    ); ?>
 
-    <?= $form->field($model, 'id_categoria')->dropDownList($catDesplegable, ['prompt' => 'Seleccione una categoria']); ?>
+    <?php if ($model->tipo == 0) { ?>
 
     <?= $form->field($model, 'id_cliente')->dropDownList($clientesDesplegable, ['prompt' => 'Seleccione un cliente']); ?>
 
+    <?php } ?>
+    
     <?= $form->field($model, 'fecha')->textInput() ?>
+
+    <?= $form->field($model, 'detalle')->textarea(['rows' => 4]) ?>
+
+
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

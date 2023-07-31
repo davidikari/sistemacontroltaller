@@ -33,12 +33,14 @@ class Caja extends \yii\db\ActiveRecord
             [['monto'], 'required'],
             [['monto', 'tipo', 'id_categoria', 'id_cliente'], 'integer'],
             [['fecha'], 'safe'],
+            [['detalle'], 'string', 'max' => 255],
         ];
     }
 
     /**
      * {@inheritdoc}
      */
+    
     public function attributeLabels()
     {
         return [
@@ -48,6 +50,18 @@ class Caja extends \yii\db\ActiveRecord
             'id_categoria' => Yii::t('app', 'Id Categoria'),
             'id_cliente' => Yii::t('app', 'Id Cliente'),
             'fecha' => Yii::t('app', 'Fecha'),
+            'detalle' => Yii::t('app', 'Detalle'),
         ];
     }
+
+    public function getCategoria()
+    {
+        return $this->hasOne(Categoria::className(), ['id' => 'id_categoria']);
+    }
+
+    public function getCliente()
+    {
+        return $this->hasOne(Cliente::className(), ['id' => 'id_cliente']);
+    }
 }
+

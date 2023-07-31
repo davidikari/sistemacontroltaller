@@ -24,14 +24,24 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'monto',
-            'tipo',
-            'id_categoria',
-            'id_cliente',
             'fecha',
+            //'id',
+            'monto',
+            [
+                'attribute' => 'tipo',
+                'value' => function ($model) {
+                    return $model->tipo === 0 ? 'Ingreso' : 'Egreso';
+                },
+            ],
+            [
+                'attribute' => 'id_categoria',
+                'value' => 'categoria.descripcion',
+            ],
+            [
+                'attribute' => 'id_cliente',
+                'value' => 'cliente.nombre'
+            ],
+            'detalle',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Caja $model, $key, $index, $column) {

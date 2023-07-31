@@ -5,6 +5,8 @@ namespace frontend\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\Caja;
+use frontend\models\Categoria;
+use frontend\models\Cliente;
 
 /**
  * CajaSearch represents the model behind the search form of `frontend\models\Caja`.
@@ -19,6 +21,7 @@ class CajaSearch extends Caja
         return [
             [['id', 'monto', 'tipo', 'id_categoria', 'id_cliente'], 'integer'],
             [['fecha'], 'safe'],
+            [['detalle'], 'string', 'max' => 255],
         ];
     }
 
@@ -64,6 +67,7 @@ class CajaSearch extends Caja
             'id_categoria' => $this->id_categoria,
             'id_cliente' => $this->id_cliente,
             'fecha' => $this->fecha,
+            'detalle' => $this->detalle,
         ]);
 
         return $dataProvider;

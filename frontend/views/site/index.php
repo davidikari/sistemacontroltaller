@@ -1,19 +1,23 @@
 
 <?php
 use yii\helpers\Html;
+use yii\grid\GridView;
+use yii\data\ArrayDataProvider;
+
+
 
 /** @var yii\web\View $this */
 
 $this->title = 'Dalinda Confecciones';
 ?>
 <div class="site-index">
-       
+
             <?php 
 
             $dataProvider = new \yii\data\ArrayDataProvider([
-    'allModels' => $totales,
-    'pagination' => false,
-]);
+                'allModels' => $totales,
+                'pagination' => false,
+            ]);
 
 echo \yii\grid\GridView::widget([
     'dataProvider' => $dataProvider,
@@ -48,6 +52,7 @@ echo \yii\grid\GridView::widget([
              ?>
 
         </div>
+
         <br><br>
         <div class="body-content">
         <div>
@@ -60,6 +65,55 @@ echo \yii\grid\GridView::widget([
         
 
         <div>
+
+
+
+        <div>
+          <?php
+
+
+
+// Configuración de la GridView
+/*echo GridView::widget([
+    'dataProvider' => $dataProvider,
+    'layout' => "{items}\n{pager}", // Opcional: ajusta el diseño según tus necesidades
+    'columns' => [
+        'cetegoria',
+        'Ingreso',
+        'Saldo',
+        // ... Agrega aquí más columnas según tus datos
+
+        // Columna de acciones con estilo responsivo
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '{view} {update} {delete}',
+            'contentOptions' => ['class' => 'actions-column'],
+            'buttons' => [
+                'view' => function ($url, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
+                        'title' => 'Ver',
+                    ]);
+                },
+                'update' => function ($url, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                        'title' => 'Editar',
+                    ]);
+                },
+                'delete' => function ($url, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+                        'title' => 'Eliminar',
+                        'data-confirm' => '¿Estás seguro de eliminar este elemento?',
+                        'data-method' => 'post',
+                    ]);
+                },
+            ],
+        ],
+    ],
+]);*/
+?>
+
+        </div>
+
     </div>
 </div>
 <style type="text/css">

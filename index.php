@@ -1,4 +1,5 @@
-<?php
-	header("Location: empresas/index", true, 301);
+
+<?php 
+header("Location: frontend/web", true, 301);
 	exit();
 ?>
