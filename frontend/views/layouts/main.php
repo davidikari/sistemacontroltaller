@@ -28,14 +28,15 @@ AppAsset::register($this);
 <header>
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => '<img src="img/Dalinda2.png" style="width: 250px; height: 70px; margin-left: -60px; margin-top: 10px;" >',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+            'class' => 'navbar navbar-expand-md navbar-white bg-white fixed-top edit',
         ],
     ]);
+
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => '', 'url' => ['/site/index']],
         ['label' => 'Cliente', 'url' => ['/cliente/index']],
         ['label' => 'Caja', 'url' => ['/caja/index']],
     ];
@@ -60,8 +61,9 @@ AppAsset::register($this);
     NavBar::end();
     ?>
 </header>
+<br><br>
 
-<main role="main" class="flex-shrink-0">
+<main role="main" class="flex-shrink-0" style="margin-top: 80px;">
     <div class="container">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
@@ -71,12 +73,7 @@ AppAsset::register($this);
     </div>
 </main>
 
-<footer class="footer mt-auto py-3 text-muted">
-    <div class="container">
-        <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p class="float-end"><?= Yii::powered() ?></p>
-    </div>
-</footer>
+
 
 <?php $this->endBody() ?>
 </body>
