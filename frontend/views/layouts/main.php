@@ -28,10 +28,10 @@ AppAsset::register($this);
 <header>
     <?php
     NavBar::begin([
-        'brandLabel' => '<img src="img/Dalinda2.png" style="width: 250px; height: 70px; margin-left: -60px; margin-top: 10px;" >',
+        'brandLabel' => '<img src="img/Dalinda2.png" style="width: 250px; height: 70px; margin-left: -80px; margin-top: 10px;" >',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar navbar-expand-md navbar-white bg-white fixed-top edit',
+            'class' => 'navbar navbar-expand-md navbar-white bg-transparent fixed-top edit',
         ],
     ]);
 
@@ -70,7 +70,28 @@ AppAsset::register($this);
         ]) ?>
         <?= Alert::widget() ?>
         <?= $content ?>
-    </div>
+    </div> 
+<div class="imagen-container">
+<img class="imagen" src="img/Dalinda0001.png">
+<style type="text/css">
+    .imagen-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    .imagen{
+        position: fixed;
+        top: 90px;
+        left: 680px;
+        z-index: -1;
+        width: 50%;
+        height: 100%;
+        opacity: 0.7;
+        transform: rotate(180deg);
+    }
+</style>
+</div>
 </main>
 
 
@@ -79,3 +100,4 @@ AppAsset::register($this);
 </body>
 </html>
 <?php $this->endPage();
+

@@ -65,6 +65,8 @@ $this->title = Yii::t('app', 'Cajas');
         border: 1px solid #ccc; /* Establecer un borde alrededor de la tabla */
         border-spacing: 0; /* Espaciado entre celdas */
         background-color:  #f3e5f5 ;
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+
 
     }
 
