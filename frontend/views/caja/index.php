@@ -15,7 +15,7 @@ $this->title = Yii::t('app', 'Cajas');
 <div class="caja-index">
 
     <h1 class="title2"><?= Html::encode($this->title) ?></h1>
-    <br>
+    
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 

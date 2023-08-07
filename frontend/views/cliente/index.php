@@ -16,7 +16,7 @@ $this->title = Yii::t('app', 'Clientes');
 <div class="cliente-index">
 
     <h1 class="title1"><?= Html::encode($this->title) ?></h1>
-    <br>
+    
    
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -71,6 +71,7 @@ $this->title = Yii::t('app', 'Clientes');
         border: 1px solid #ccc; /* Establecer un borde alrededor de la tabla */
         border-spacing: 0; /* Espaciado entre celdas */
         background-color:  #f3e5f5 ;
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 
     }
 
