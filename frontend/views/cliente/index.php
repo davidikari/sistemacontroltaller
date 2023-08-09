@@ -16,8 +16,10 @@ $this->title = Yii::t('app', 'Clientes');
 <div class="cliente-index">
 
     <h1 class="title1"><?= Html::encode($this->title) ?></h1>
-    
-   
+    <br>
+    <p>
+        <?= Html::a(Yii::t('app', 'Nuevo Cliente'), ['create'], ['class' => 'custom-btn']) ?>
+    </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -42,9 +44,7 @@ $this->title = Yii::t('app', 'Clientes');
         ],
     ]); ?>
 <br>
-     <p>
-        <?= Html::a(Yii::t('app', 'Create Cliente'), ['create'], ['class' => 'custom-btn']) ?>
-    </p>
+     
 </div>
 <style type="text/css">
     .custom-btn{

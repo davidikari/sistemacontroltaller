@@ -71,7 +71,7 @@ AppAsset::register($this);
     NavBar::end();
     ?>
 </header>
-<br><br>
+
 
 
 <main role="main" class="flex-shrink-0" style="margin-top: 80px;">
@@ -117,8 +117,6 @@ AppAsset::register($this);
 </style>
 </div>
 </main>
-
-
 
 <?php $this->endBody() ?>
 </body>

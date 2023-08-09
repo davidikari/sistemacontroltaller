@@ -22,11 +22,12 @@ if ($model->tipo == 1) {
 
     <?php $form = ActiveForm::begin(); ?>
     
-
+<div class="form-column">
+    <div class="form-column">
     <?= $form->field($model, 'monto')->textInput() ?>
-
+    </div>
     <?= $form->field($model, 'tipo')->hiddenInput()->label(false) ?>
-
+    <div class="form-column">
     <?= $form->field($model, 'id_categoria')->dropDownList(
     $catDesplegable,
         [
@@ -36,17 +37,25 @@ if ($model->tipo == 1) {
             ]
         ]
     ); ?>
+    </div>
+</div>
 
+<div class="form-column">
+
+    <div class="form-column">
+        <?= $form->field($model, 'fecha')->textInput() ?>
+    </div>
+    <br>
+        <div class="form-column">
     <?php if ($model->tipo == 0) { ?>
-
     <?= $form->field($model, 'id_cliente')->dropDownList($clientesDesplegable, ['prompt' => 'Seleccione un cliente']); ?>
 
     <?php } ?>
-    
-    <?= $form->field($model, 'fecha')->textInput() ?>
+    </div>
 
-    <?= $form->field($model, 'detalle')->textarea(['rows' => 4]) ?>
+</div>
 
+        <?= $form->field($model, 'detalle')->textarea(['rows' => 4]) ?>
 
 <br>
 
@@ -97,6 +106,16 @@ if ($model->tipo == 1) {
     }
     .caja-form .field-caja-id_cliente select {
     width: 200px; 
+    }
+    .form-column {
+    display: inline-block;
+    width: 15%; /* Ajusta el ancho según tus necesidades */
+    margin-right: 5%; /* Espacio entre las columnas */
+    vertical-align: top; /* Alinear la parte superior de los campos */
+    }
+
+    .form-column:last-child {
+        margin-right: 0; /* Eliminar el margen derecho para la última columna */
     }
 
 
