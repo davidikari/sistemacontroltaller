@@ -71,6 +71,7 @@ class CajaController extends Controller
      */
     public function actionCreate()
     {
+        date_default_timezone_set('America/Argentina/Buenos_Aires');
         $model = new Caja();
         $model->fecha = date('Y-m-d H:i:s');
 
