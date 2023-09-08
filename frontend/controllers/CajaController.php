@@ -175,4 +175,8 @@ class CajaController extends Controller
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
+
+    public function actionConsulta() {
+        return $this->render('consulta');
+    }
 }
