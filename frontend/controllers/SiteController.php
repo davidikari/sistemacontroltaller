@@ -16,6 +16,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use frontend\models\Caja;
+use frontend\models\CajaSearch;
 use frontend\models\Categoria;
 
 /**
@@ -79,18 +80,21 @@ class SiteController extends Controller
     {
         $modelCategoria = new Categoria();
         $modelCategorias = Categoria::find()->all();
-
+        $mesActual = date('m');
         $totales = [];
         foreach($modelCategorias as $categoria){
             $categoriaArray = [];
+
             $querySum = Caja::find()
                 ->select('SUM(monto) AS total')
-                ->where(['id_categoria' => $categoria['id'], 'tipo' => 0]);
+                ->where(['id_categoria' => $categoria['id'], 'tipo' => 0])
+                ->andWhere(['MONTH(fecha)' => $mesActual]);
             $totalSum= $querySum->createCommand()->queryScalar();
 
             $queryDif = Caja::find()
                 ->select('SUM(monto) AS total')
-                ->where(['id_categoria' => $categoria['id'], 'tipo' => 1]);
+                ->where(['id_categoria' => $categoria['id'], 'tipo' => 1])
+                ->andWhere(['MONTH(fecha)' => $mesActual]);
             $totalDif= $queryDif->createCommand()->queryScalar();
 
             $categoriaArray['categoria'] = $categoria['descripcion'];
@@ -282,6 +286,27 @@ class SiteController extends Controller
 
         return $this->render('resendVerificationEmail', [
             'model' => $model
+        ]);
+    }
+    public function actionConsulta(){
+        $cajas = Caja::find()
+            ->where(['id_cliente' => 2])
+            ->all();
+
+        $query = Caja::find()
+                ->select('monto')
+                ->where(['tipo' => 1]);
+        $totalEgreso= $query->all();
+
+        $model = new Caja();
+
+        /*echo('<pre>');
+        var_dump($totalEgreso); 
+        echo('</pre>');die();*/
+
+        return $this->render('consulta',[
+            'totalEgreso' => $totalEgreso,
+            'model' => $model,
         ]);
     }
 }
