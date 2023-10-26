@@ -78,15 +78,15 @@ $this->title = 'Dalinda Confecciones';
                     ],
                       [
                         'attribute' => 'Ingreso',
-                        'footer' => array_sum(array_column($totales, 'Ingreso')),
+                        'footer' => array_sum(array_column($totalGen, 'Ingreso')),
                     ],
                     [
                         'attribute' => 'Egreso',
-                        'footer' => array_sum(array_column($totales, 'Egreso')),
+                        'footer' => array_sum(array_column($totalGen, 'Egreso')),
                     ],
                     [
                         'attribute' => 'Saldo',
-                        'footer' => array_sum(array_column($totales, 'Saldo')),
+                        'footer' => array_sum(array_column($totalGen, 'Saldo')),
                     ],
                 ],
             ]);
