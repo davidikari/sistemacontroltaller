@@ -81,31 +81,50 @@ class SiteController extends Controller
         $modelCategoria = new Categoria();
         $modelCategorias = Categoria::find()->all();
         $mesActual = date('m');
-        $totales = [];
+        $totalMesAct = [];
+        $totalGen = [];
         foreach($modelCategorias as $categoria){
             $categoriaArray = [];
-
-            $querySum = Caja::find()
+            $querySumMesAct = Caja::find()
                 ->select('SUM(monto) AS total')
                 ->where(['id_categoria' => $categoria['id'], 'tipo' => 0])
                 ->andWhere(['MONTH(fecha)' => $mesActual]);
-            $totalSum= $querySum->createCommand()->queryScalar();
+            $totalSumMesAct = $querySumMesAct->createCommand()->queryScalar();
 
-            $queryDif = Caja::find()
+            $queryDifMesAct = Caja::find()
                 ->select('SUM(monto) AS total')
                 ->where(['id_categoria' => $categoria['id'], 'tipo' => 1])
                 ->andWhere(['MONTH(fecha)' => $mesActual]);
-            $totalDif= $queryDif->createCommand()->queryScalar();
+            $totalDifMesAct = $queryDifMesAct->createCommand()->queryScalar();
 
             $categoriaArray['categoria'] = $categoria['descripcion'];
-            $categoriaArray['Ingreso'] = $totalSum;
-            $categoriaArray['Egreso'] = $totalDif;
-            $categoriaArray['Saldo'] = $totalSum - $totalDif;
-            $totales[$categoria['descripcion']] = $categoriaArray;
+            $categoriaArray['Ingreso'] = $totalSumMesAct;
+            $categoriaArray['Egreso'] = $totalDifMesAct;
+            $categoriaArray['Saldo'] = $totalSumMesAct - $totalDifMesAct;
+            $totalMesAct[$categoria['descripcion']] = $categoriaArray;
+
+
+            $categoriaArrayGen = [];
+            $querySum = Caja::find()
+                ->select('SUM(monto) AS total')
+                ->where(['id_categoria' => $categoria['id'], 'tipo' => 0]);
+            $totalSum = $querySum->createCommand()->queryScalar();
+
+            $queryDif = Caja::find()
+                ->select('SUM(monto) AS total')
+                ->where(['id_categoria' => $categoria['id'], 'tipo' => 1]);
+            $totalDif = $queryDif->createCommand()->queryScalar();
+
+            $categoriaArrayGen['categoria'] = $categoria['descripcion'];
+            $categoriaArrayGen['Ingreso'] = $totalSum;
+            $categoriaArrayGen['Egreso'] = $totalDif;
+            $categoriaArrayGen['Saldo'] = $totalSum - $totalDif;
+            $totalGen[$categoria['descripcion']] = $categoriaArrayGen;
             
         }
         return $this->render('index', [
-            'totales' => $totales,
+            'totales' => $totalMesAct,
+            'totalGen' => $totalGen,
         ]);
 
     }
@@ -309,4 +328,24 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
+    // En el controlador
+public function actionBuscar()
+{
+    $selectedMonth = Yii::$app->request->get('selectedMonth');
+    
+    // Validación de entrada y lógica de búsqueda
+    if ($selectedMonth) {
+        // Realizar una consulta a la base de datos, por ejemplo, utilizando Active Record de Yii:
+        $results = TuModelo::find()
+            ->where(['like', 'tuCampoFecha', '02-' . $selectedMonth])
+            ->all();
+        
+        // Haz algo con los resultados (por ejemplo, muestra una vista con los resultados)
+        return $this->render('resultados', ['results' => $results]);
+    } else {
+        // No se ha seleccionado un mes, puedes mostrar un mensaje de error o redirigir a otra página.
+    }
+}
+
 }

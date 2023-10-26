@@ -19,41 +19,79 @@ $this->title = 'Dalinda Confecciones';
                 'pagination' => false,
             ]);
 
-echo \yii\grid\GridView::widget([
-    'dataProvider' => $dataProvider,
-    'showFooter' => true,
-    'rowOptions' => function ($model, $key, $index, $grid) {
-        return $index % 2 == 0 ? ['class' => 'even-row'] : ['class' => 'odd-row'];
-    },
-    'tableOptions' => ['class' => 'my-gridview'],
-    'columns' => [
+            echo \yii\grid\GridView::widget([
+                'dataProvider' => $dataProvider,
+                'showFooter' => true,
+                'rowOptions' => function ($model, $key, $index, $grid) {
+                    return $index % 2 == 0 ? ['class' => 'even-row'] : ['class' => 'odd-row'];
+                },
+                'tableOptions' => ['class' => 'my-gridview'],
+                'columns' => [
 
-        // Agrega aquí las columnas para las demás categorías
-          [
-            'attribute' => 'categoria',
-            'label' => 'Categoria:',
-            'footer' => 'Total',
-        ],
-          [
-            'attribute' => 'Ingreso',
-            'footer' => array_sum(array_column($totales, 'Ingreso')),
-        ],
-        [
-            'attribute' => 'Egreso',
-            'footer' => array_sum(array_column($totales, 'Egreso')),
-        ],
-        [
-            'attribute' => 'Saldo',
-            'footer' => array_sum(array_column($totales, 'Saldo')),
-        ],
-    ],
-]);
+                    // Agrega aquí las columnas para las demás categorías
+                      [
+                        'attribute' => 'categoria',
+                        'label' => 'Categoria:',
+                        'footer' => 'Total',
+                    ],
+                      [
+                        'attribute' => 'Ingreso',
+                        'footer' => array_sum(array_column($totales, 'Ingreso')),
+                    ],
+                    [
+                        'attribute' => 'Egreso',
+                        'footer' => array_sum(array_column($totales, 'Egreso')),
+                    ],
+                    [
+                        'attribute' => 'Saldo',
+                        'footer' => array_sum(array_column($totales, 'Saldo')),
+                    ],
+                ],
+            ]);
 
              ?>
 
         </div>
 
         <br>
+         <?php 
+
+            $dataProvider2 = new \yii\data\ArrayDataProvider([
+                'allModels' => $totalGen,
+                'pagination' => false,
+            ]);
+
+            echo \yii\grid\GridView::widget([
+                'dataProvider' => $dataProvider2,
+                'showFooter' => true,
+                'rowOptions' => function ($model, $key, $index, $grid) {
+                    return $index % 2 == 0 ? ['class' => 'even-row'] : ['class' => 'odd-row'];
+                },
+                'tableOptions' => ['class' => 'my-gridview'],
+                'columns' => [
+
+                    // Agrega aquí las columnas para las demás categorías
+                      [
+                        'attribute' => 'categoria',
+                        'label' => 'Categoria:',
+                        'footer' => 'Total',
+                    ],
+                      [
+                        'attribute' => 'Ingreso',
+                        'footer' => array_sum(array_column($totales, 'Ingreso')),
+                    ],
+                    [
+                        'attribute' => 'Egreso',
+                        'footer' => array_sum(array_column($totales, 'Egreso')),
+                    ],
+                    [
+                        'attribute' => 'Saldo',
+                        'footer' => array_sum(array_column($totales, 'Saldo')),
+                    ],
+                ],
+            ]);
+
+             ?>
         <div class="body-content">
         <!--<div>
             <!?= Html::a(Yii::t('app', 'ingreso'), ['caja/create', 'dato' => 0], ['class' => 'custom-button']) ?>
