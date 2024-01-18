@@ -80,7 +80,13 @@ class SiteController extends Controller
     {
         $modelCategoria = new Categoria();
         $modelCategorias = Categoria::find()->all();
-        $mesActual = date('m');
+        if (Yii::$app->request->post()) {
+            var_dump(Yii::$app->request->post()); die();
+        }else{
+            $mesActual = date('m');
+            var_dump($mesActual);    
+        }
+        
         $totalMesAct = [];
         $totalGen = [];
         foreach($modelCategorias as $categoria){
@@ -119,12 +125,33 @@ class SiteController extends Controller
             $categoriaArrayGen['Ingreso'] = $totalSum;
             $categoriaArrayGen['Egreso'] = $totalDif;
             $categoriaArrayGen['Saldo'] = $totalSum - $totalDif;
-            $totalGen[$categoria['descripcion']] = $categoriaArrayGen;
-            
+            $totalGen[$categoria['descripcion']] = $categoriaArrayGen;      
         }
+
+        $ingresosMensuales = Caja::find()
+            ->select(['MONTH(fecha) AS mes', 'SUM(monto) AS total'])
+            ->where(['tipo' => 0]) // 0 para ingresos
+            //->andWhere(['tus_filtros']) // Agrega tus filtros
+            ->groupBy(['mes'])
+            ->asArray()
+            ->all();
+
+        $egresosMensuales = Caja::find()
+            ->select(['MONTH(fecha) AS mes', 'SUM(monto) AS total'])
+            ->where(['tipo' => 1]) // 1 para egresos
+            //->andWhere(['tus_filtros']) // Agrega tus filtros
+            ->groupBy(['mes'])
+            ->asArray()
+            ->all();
+
+            //var_dump($ingresosMensuales); die();
+
+
         return $this->render('index', [
             'totales' => $totalMesAct,
             'totalGen' => $totalGen,
+            'ingresos' => $ingresosMensuales,
+            'egresos' => $egresosMensuales
         ]);
 
     }

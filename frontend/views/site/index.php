@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
-
+use yii\bootstrap5\ActiveForm;
 
 
 /** @var yii\web\View $this */
@@ -11,9 +11,20 @@ use yii\data\ArrayDataProvider;
 $this->title = 'Dalinda Confecciones';
 ?>
 <div class="site-index">
+    <div>
+         <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+
+                <?= $form->field($model, 'fecha')->textInput(['autofocus' => true]) ?>
+
+                <div class="form-group">
+                    <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                </div>
+
+            <?php ActiveForm::end(); ?>
+    </div>
 
             <?php 
-
+   
             $dataProvider = new \yii\data\ArrayDataProvider([
                 'allModels' => $totales,
                 'pagination' => false,
@@ -51,7 +62,7 @@ $this->title = 'Dalinda Confecciones';
 
              ?>
 
-        </div>
+        
 
         <br>
          <?php 
@@ -92,68 +103,48 @@ $this->title = 'Dalinda Confecciones';
             ]);
 
              ?>
-        <div class="body-content">
-        <!--<div>
-            <!?= Html::a(Yii::t('app', 'ingreso'), ['caja/create', 'dato' => 0], ['class' => 'custom-button']) ?>
-
-           <!?= Html::a(Yii::t('app', 'egreso'), ['caja/create', 'dato' => 1], ['class' => 'custom-button']) ?>
-
-        </div>-->
-        <hr>
-        
-
-        <div>
-
- 
-
-        <div>
-          <?php
-
-
-
-// Configuración de la GridView
-/*echo GridView::widget([
-    'dataProvider' => $dataProvider,
-    'layout' => "{items}\n{pager}", // Opcional: ajusta el diseño según tus necesidades
-    'columns' => [
-        'cetegoria',
-        'Ingreso',
-        'Saldo',
-        // ... Agrega aquí más columnas según tus datos
-
-        // Columna de acciones con estilo responsivo
-        [
-            'class' => 'yii\grid\ActionColumn',
-            'template' => '{view} {update} {delete}',
-            'contentOptions' => ['class' => 'actions-column'],
-            'buttons' => [
-                'view' => function ($url, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
-                        'title' => 'Ver',
-                    ]);
-                },
-                'update' => function ($url, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
-                        'title' => 'Editar',
-                    ]);
-                },
-                'delete' => function ($url, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
-                        'title' => 'Eliminar',
-                        'data-confirm' => '¿Estás seguro de eliminar este elemento?',
-                        'data-method' => 'post',
-                    ]);
-                },
-            ],
-        ],
-    ],
-]);*/
-?>
-
-        </div>
-
     </div>
-</div>
+
+<?php use yii\web\YiiAsset;
+
+YiiAsset::register($this); // Esto carga jQuery y Bootstrap (si los usas)
+
+$this->registerJsFile('https://cdn.jsdelivr.net/npm/chart.js'); // Incluye Chart.js desde un CDN
+
+ ?>
+<canvas id="graficoIngresosEgresos" width="400" height="200"></canvas>
+
+<script>
+var ctx = document.getElementById("graficoIngresosEgresos").getContext('2d');
+
+var ingresos = <?= json_encode($ingresos) ?>;
+var egresos = <?= json_encode($egresos) ?>;
+
+var meses = ingresos.map(item => item.mes); // Asumiendo que los meses están numerados del 1 al 12
+
+var chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: meses,
+        datasets: [
+            {
+                label: 'Ingresos',
+                data: ingresos.map(item => item.total),
+                backgroundColor: 'green'
+            },
+            {
+                label: 'Egresos',
+                data: egresos.map(item => item.total),
+                backgroundColor: 'red'
+            }
+        ]
+    },
+});
+</script>
+
+
+
+
 <style type="text/css">
     /* Estilos para la tabla del GridView con la clase my-gridview */
     .my-gridview {
