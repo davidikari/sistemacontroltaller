@@ -80,11 +80,21 @@ class SiteController extends Controller
     {
         $modelCategoria = new Categoria();
         $modelCategorias = Categoria::find()->all();
+
+
+        $periodos = $this->actionListaFechas();
+        //var_dump($periodos); die();
+
         if (Yii::$app->request->post()) {
-            var_dump(Yii::$app->request->post()); die();
+
+            $fecha = Yii::$app->request->post('periodo');
+            $anio = substr($fecha, 0, 4); // Obtiene los primeros 4 caracteres (el año)
+            $mesActual = substr($fecha, 5, 2);
+            //var_dump($mesActual); die();
         }else{
             $mesActual = date('m');
-            var_dump($mesActual);    
+            $anio = date('Y');
+            //var_dump($mesActual);    
         }
         
         $totalMesAct = [];
@@ -94,13 +104,15 @@ class SiteController extends Controller
             $querySumMesAct = Caja::find()
                 ->select('SUM(monto) AS total')
                 ->where(['id_categoria' => $categoria['id'], 'tipo' => 0])
-                ->andWhere(['MONTH(fecha)' => $mesActual]);
+                ->andWhere(['MONTH(fecha)' => $mesActual])
+                ->andWhere(['YEAR(fecha)' => $anio]);
             $totalSumMesAct = $querySumMesAct->createCommand()->queryScalar();
 
             $queryDifMesAct = Caja::find()
                 ->select('SUM(monto) AS total')
                 ->where(['id_categoria' => $categoria['id'], 'tipo' => 1])
-                ->andWhere(['MONTH(fecha)' => $mesActual]);
+                ->andWhere(['MONTH(fecha)' => $mesActual])
+                ->andWhere(['YEAR(fecha)' => $anio]);
             $totalDifMesAct = $queryDifMesAct->createCommand()->queryScalar();
 
             $categoriaArray['categoria'] = $categoria['descripcion'];
@@ -148,6 +160,7 @@ class SiteController extends Controller
 
 
         return $this->render('index', [
+            'periodos' => $periodos,
             'totales' => $totalMesAct,
             'totalGen' => $totalGen,
             'ingresos' => $ingresosMensuales,
@@ -374,5 +387,33 @@ public function actionBuscar()
         // No se ha seleccionado un mes, puedes mostrar un mensaje de error o redirigir a otra página.
     }
 }
+    
+    public function actionListaFechas(){
+        $fechas = Caja::find()
+            ->select([
+                'MONTH(fecha) AS mes',
+                'YEAR(fecha) AS ano'
+            ])
+            ->distinct()
+            ->orderBy(['ano' => SORT_DESC, 'mes' => SORT_DESC]) // Opcional: Ordenar por año y mes
+            ->asArray()
+            ->all();
+
+        // Obtener un array de mes/año únicos sin repeticiones
+        $uniqueMonthsYears = array_map(
+            function ($item) {
+                return $item['ano'] . '-' . str_pad($item['mes'], 2, '0', STR_PAD_LEFT);
+            },
+            $fechas
+        );
+        $fechaConIndice = [];
+        foreach ($uniqueMonthsYears as $key) {
+            $fechaConIndice[$key] = $key;
+        }
+
+        //echo('<pre>');
+        //var_dump($fechaConIndice); die();
+        return $fechaConIndice;
+    }
 
 }

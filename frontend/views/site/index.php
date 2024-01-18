@@ -12,9 +12,29 @@ $this->title = 'Dalinda Confecciones';
 ?>
 <div class="site-index">
     <div>
-         
+      
+<?php 
+    $form = ActiveForm::begin(['method' => 'post']);
+    
+    // Supongamos que $periodos contiene las fechas en un formato simple 'YYYY-MM'
+    //$periodos = ['2024-01', '2023-12', '2023-11', '2023-10', '2023-09', '2023-08', '2023-07'];
+
+    // Construir un array asociativo sin ceros a la izquierda
+    $options = array_combine($periodos, $periodos);
+?>
+
+<?= Html::dropDownList('periodo', null, $options, ['prompt' => 'Selecciona un periodo']) ?>
+
+<?= Html::submitButton('Mostrar', ['class' => 'btn btn-primary']) ?>
+
+<?php ActiveForm::end(); ?>
+
+
+
+
     </div>
 
+<br>
             <?php 
    
             $dataProvider = new \yii\data\ArrayDataProvider([
