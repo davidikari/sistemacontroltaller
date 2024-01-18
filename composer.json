@@ -20,7 +20,8 @@
         "yiisoft/yii2-symfonymailer": "~2.0.3",
         "kartik-v/yii2-widget-select2": "*",
         "2amigos/yii2-grid-view-library": "^1.1",
-        "miloschuman/yii2-highcharts-widget": "^8.0"
+        "miloschuman/yii2-highcharts-widget": "^8.0",
+        "2amigos/yii2-chartjs-widget": "^3.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

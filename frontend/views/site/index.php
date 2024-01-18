@@ -35,6 +35,7 @@ $this->title = 'Dalinda Confecciones';
     </div>
 
 <br>
+    <h2> Periodo: <?php echo($periodoSelect) ?></h2>
             <?php 
    
             $dataProvider = new \yii\data\ArrayDataProvider([

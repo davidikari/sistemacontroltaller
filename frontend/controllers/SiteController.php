@@ -87,14 +87,16 @@ class SiteController extends Controller
 
         if (Yii::$app->request->post()) {
 
-            $fecha = Yii::$app->request->post('periodo');
-            $anio = substr($fecha, 0, 4); // Obtiene los primeros 4 caracteres (el año)
-            $mesActual = substr($fecha, 5, 2);
+            $periodoSelect = Yii::$app->request->post('periodo');
+            $anio = substr($periodoSelect, 0, 4); // Obtiene los primeros 4 caracteres (el año)
+            $mesActual = substr($periodoSelect, 5, 2);
             //var_dump($mesActual); die();
         }else{
+
             $mesActual = date('m');
             $anio = date('Y');
             //var_dump($mesActual);    
+            $periodoSelect = $mesActual.'-'.$anio;
         }
         
         $totalMesAct = [];
@@ -164,7 +166,8 @@ class SiteController extends Controller
             'totales' => $totalMesAct,
             'totalGen' => $totalGen,
             'ingresos' => $ingresosMensuales,
-            'egresos' => $egresosMensuales
+            'egresos' => $egresosMensuales,
+            'periodoSelect' => $periodoSelect
         ]);
 
     }
@@ -347,46 +350,24 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
-    public function actionConsulta(){
-        $cajas = Caja::find()
-            ->where(['id_cliente' => 2])
-            ->all();
-
-        $query = Caja::find()
-                ->select('monto')
-                ->where(['tipo' => 1]);
-        $totalEgreso= $query->all();
-
-        $model = new Caja();
-
-        /*echo('<pre>');
-        var_dump($totalEgreso); 
-        echo('</pre>');die();*/
-
-        return $this->render('consulta',[
-            'totalEgreso' => $totalEgreso,
-            'model' => $model,
-        ]);
-    }
-
-    // En el controlador
-public function actionBuscar()
-{
-    $selectedMonth = Yii::$app->request->get('selectedMonth');
     
-    // Validación de entrada y lógica de búsqueda
-    if ($selectedMonth) {
-        // Realizar una consulta a la base de datos, por ejemplo, utilizando Active Record de Yii:
-        $results = TuModelo::find()
-            ->where(['like', 'tuCampoFecha', '02-' . $selectedMonth])
-            ->all();
+    public function actionBuscar()
+    {
+        $selectedMonth = Yii::$app->request->get('selectedMonth');
         
-        // Haz algo con los resultados (por ejemplo, muestra una vista con los resultados)
-        return $this->render('resultados', ['results' => $results]);
-    } else {
-        // No se ha seleccionado un mes, puedes mostrar un mensaje de error o redirigir a otra página.
+        // Validación de entrada y lógica de búsqueda
+        if ($selectedMonth) {
+            // Realizar una consulta a la base de datos, por ejemplo, utilizando Active Record de Yii:
+            $results = TuModelo::find()
+                ->where(['like', 'tuCampoFecha', '02-' . $selectedMonth])
+                ->all();
+            
+            // Haz algo con los resultados (por ejemplo, muestra una vista con los resultados)
+            return $this->render('resultados', ['results' => $results]);
+        } else {
+            // No se ha seleccionado un mes, puedes mostrar un mensaje de error o redirigir a otra página.
+        }
     }
-}
     
     public function actionListaFechas(){
         $fechas = Caja::find()
@@ -414,6 +395,38 @@ public function actionBuscar()
         //echo('<pre>');
         //var_dump($fechaConIndice); die();
         return $fechaConIndice;
+    }
+
+    public function actionGrafico()
+    {
+        $periodos = $this->actionListaFechas();
+        var_dump($periodos); die();
+
+        $gastosTaller='qwe';
+        // Obtener datos para el gráfico
+        $gastosTaller = Taller::find()->where(['tipo' => 'gasto'])->groupBy(['MONTH(fecha)'])->sum('monto');
+        $gastosHabituales = Taller::find()->where(['tipo' => 'gasto_habitual'])->groupBy(['MONTH(fecha)'])->sum('monto');
+        $ingresos = Taller::find()->where(['tipo' => 'ingreso'])->groupBy(['MONTH(fecha)'])->sum('monto');
+
+        // Convertir los datos a formato adecuado para el gráfico
+        $labels = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        $data = [
+            'Gastos de Taller' => array_values($gastosTaller),
+            'Gastos Habituales' => array_values($gastosHabituales),
+            'Ingresos' => array_values($ingresos),
+        ];
+
+        // Renderizar la vista con el gráfico
+        return $this->render('grafico', [
+            'labels' => $labels,
+            'data' => $data,
+        ]);
+    }
+    public function actionInd(){
+        $periodos = $this->actionListaFechas();
+        var_dump($periodos); die();
+        return $this->render('grafico');
+
     }
 
 }
