@@ -397,7 +397,7 @@ class SiteController extends Controller
         return $fechaConIndice;
     }
 
-    public function actionGrafico()
+    public function actionGrafo()
     {
         $periodos = $this->actionListaFechas();
         var_dump($periodos); die();
@@ -422,11 +422,116 @@ class SiteController extends Controller
             'data' => $data,
         ]);
     }
-    public function actionInd(){
+    public function actionGrafico(){
+
+        $categorias = $this->obtenerCategorias();
+        $categoriasNombres = $this->obtenerNombreCategoria();
         $periodos = $this->actionListaFechas();
-        var_dump($periodos); die();
-        return $this->render('grafico');
+        
+       /*$elTodo =[];
+        foreach ($categorias as $cat) {
+            foreach ($periodos as $period) {
+
+                $anio = substr($period, 0, 4);
+                $mesActual = substr($period, 5, 2);
+                $totalPeriodo = Caja::find()
+                ->select('SUM(monto) AS total')
+                ->where(['id_categoria' => $cat['id_categoria'], 'tipo' => $cat['tipo']])
+                ->andWhere(['MONTH(fecha)' => $mesActual])
+                ->andWhere(['YEAR(fecha)' => $anio]);
+            }
+        }*/
+
+        $elTodo = [];
+        $contador = 0;
+        foreach ($categorias as $cat) {
+            $categoriaArray = [
+                'id_categoria' => $cat['id_categoria'],
+                'tipo' => $cat['tipo'],
+                'totales' => [],
+            ];
+
+            foreach ($periodos as $period) {
+                $anio = substr($period, 0, 4);
+                $mesActual = substr($period, 5, 2);
+
+                $totalPeriodo = Caja::find()
+                    ->select('SUM(monto) AS total')
+                    ->where(['id_categoria' => $cat['id_categoria'], 'tipo' => $cat['tipo']])
+                    ->andWhere(['MONTH(fecha)' => $mesActual])
+                    ->andWhere(['YEAR(fecha)' => $anio])
+                    ->scalar();
+
+                $categoriaArray['totales'][] = $totalPeriodo;
+            }
+
+            $elTodo[$categoriasNombres[$contador]] = $categoriaArray['totales'];
+            $contador=$contador +1;
+        }
+
+        /*echo('<pre>');
+        var_dump($elTodo);
+        echo('<pre>');
+        var_dump($categoriasNombres); die();*/
+        $data = [];
+        $labels = range(1, count(reset($elTodo))); // Suponiendo que hay el mismo número de períodos en cada categoría
+
+        foreach ($elTodo as $categoria => $totales) {
+            $dataset = [
+                'label' => $categoria,
+                'backgroundColor' => 'rgba(' . rand(0, 255) . ',' . rand(0, 255) . ',' . rand(0, 255) . ', 0.2)', // Colores aleatorios
+                'borderColor' => 'rgba(' . rand(0, 255) . ',' . rand(0, 255) . ',' . rand(0, 255) . ', 1)',
+                'borderWidth' => 2,
+                'data' => $totales,
+                'fill' => false,
+                'tension' => 0,
+            ];
+
+            $data['datasets'][] = $dataset;
+        }
+
+        $data['labels'] = $labels;
+
+        return $this->render('grafico', [
+            'labels' => $periodos,
+            'data' => $data,
+        ]);
 
     }
 
+    private function obtenerCategorias(){
+        $combinacionesUnicas = Caja::find()
+            ->select(['id_categoria', 'tipo'])
+            ->distinct()
+            ->groupBy(['id_categoria', 'tipo'])
+            ->asArray()
+            ->all();
+        return $combinacionesUnicas;
+    }
+
+    private function obtenerNombreCategoria(){
+        $categorias = $this->obtenerCategorias();
+        $nombreCategoria = [];
+        foreach ($categorias as $value) {
+            
+            if ($value['tipo'] == '0') {
+                $tipo = 'Ingreso';    
+            }
+            if ($value['tipo'] == '1') {
+                $tipo = 'Egreso';    
+            }
+            
+            $categoriaNombre = Categoria::findOne($value['id_categoria']);
+            if ($categoriaNombre !== null) {
+                $nomCat = $categoriaNombre->descripcion;
+                // Haz algo con $nombreCategoria
+            } else {
+                // Manejar el caso en el que no se encuentra la categoría con el ID dado
+                echo "Categoría no encontrada para el ID: $idCategoria";
+            }
+
+            $nombreCategoria[] =  $tipo.'-'.$nomCat;
+        } 
+        return $nombreCategoria;
+    }
 }
