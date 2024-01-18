@@ -24,7 +24,11 @@ $this->title = Yii::t('app', 'Cajas');
         'filterModel' => $searchModel,
         'tableOptions' => ['class' => 'my-gridview'],
         'columns' => [
-            'fecha',
+            [
+                'attribute' => 'fecha',
+                'label' => 'Fecha',
+                'format' => ['date', 'php:d/m/Y'],
+            ],
             //'id',
             'monto',
             [
@@ -49,6 +53,20 @@ $this->title = Yii::t('app', 'Cajas');
                  }
             ],
         ],
+        'options' => [
+            'class' => 'table-responsive', // Ajusta según tus necesidades
+        ],
+        'pager' => [
+            'class' => yii\widgets\LinkPager::class,
+            'options' => ['class' => 'pagination justify-content-end'],
+            'prevPageLabel' => 'Anterior', // Etiqueta para la página anterior
+            'nextPageLabel' => 'Siguiente', // Etiqueta para la página siguiente
+            'firstPageLabel' => 'Primera', // Etiqueta para la primera página
+            'lastPageLabel' => 'Última', // Etiqueta para la última página
+        ],
+        'summary' => "Mostrando {begin} - {end} de {totalCount} elementos",
+    
+        
     ]); ?>
 
 
@@ -94,4 +112,50 @@ $this->title = Yii::t('app', 'Cajas');
         font-weight: bold; /* Texto en negrita en el pie de la tabla */
         background-color: #d7bde2; /* Color de fondo para el pie de la tabla */
     }
+
+/* Estilos generales para la paginación */
+.pagination {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Estilos para los botones de paginación */
+.pagination a,
+.pagination span {
+    color: #007bff;
+    border: 1px solid #007bff;
+    padding: 6px 12px;
+    margin: 0 2px;
+    text-decoration: none;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+/* Estilos para el botón "Anterior" */
+.pagination .prev:not(.disabled):hover a {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Estilos para el botón "Siguiente" */
+.pagination .next:not(.disabled):hover a {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Estilos para el botón "Primera" */
+.pagination .first:not(.disabled):hover a {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Estilos para el botón "Última" */
+.pagination .last:not(.disabled):hover a {
+    background-color: #007bff;
+    color: #fff;
+}
+.pagination .justify-content-end {
+    padding-top: 20px;
+}
+
 </style>
