@@ -527,7 +527,7 @@ class SiteController extends Controller
                 // Haz algo con $nombreCategoria
             } else {
                 // Manejar el caso en el que no se encuentra la categoría con el ID dado
-                echo "Categoría no encontrada para el ID: $idCategoria";
+                echo "Categoría no encontrada para el ID: $categoriaNombre";
             }
 
             $nombreCategoria[] =  $tipo.'-'.$nomCat;
