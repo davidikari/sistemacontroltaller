@@ -2,6 +2,10 @@
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
+use yii\web\JsExpression;
+use Yii;
+
 
 /** @var yii\web\View $this */
 /** @var frontend\models\Caja $model */
@@ -46,11 +50,34 @@ if ($model->tipo == 1) {
         <?= $form->field($model, 'fecha')->textInput() ?>
     </div>
     <br>
-        <div class="form-column">
+    <div class="form-column">
     <?php if ($model->tipo == 0) { ?>
-    <?= $form->field($model, 'id_cliente')->dropDownList($clientesDesplegable, ['prompt' => 'Seleccione un cliente']); ?>
+    <!--<?//= $form->field($model, 'id_cliente')->dropDownList($clientesDesplegable, ['prompt' => 'Seleccione un cliente']); ?>-->
+    <?= $form->field($model, 'id_cliente')->widget(Select2::classname(), [
+        'options' => [
+            'placeholder' => 'Buscar cliente...',
+            'style' => 'width: 300px;', 
+            'id' => 'busca-cliente',
+        ],
+        'pluginOptions' => [
+            'allowClear' => true,
+            'minimumInputLength' => 3,
+            'ajax' => [
+                'url' => \yii\helpers\Url::to(['cliente/buscar']),
+                'dataType' => 'json',
+                'data' => new JsExpression('function(params) { return {q:params.term}; }'),
+                'processResults' => new JsExpression('function(data) {
+                    return { results: data };
+                }'),
+            ],
+            'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+            'templateResult' => new JsExpression('function(cliente) { return cliente.text; }'),
+            'templateSelection' => new JsExpression('function (cliente) { return cliente.text; }'),
+        ],
+    ]); ?>
 
-    <?php } ?>
+
+ <?php } ?>
     </div>
 
 </div>
@@ -67,6 +94,26 @@ if ($model->tipo == 1) {
 
 </div>
 <style type="text/css">
+    #busca-cliente {
+        max-width: 100%;
+        width: 300px; /* o el valor que desees */
+    }
+
+    .selection {
+        max-width: 50px;
+    }
+    .select2-container .select2-selection--single {
+        display: inline-block !important;
+        width: 300px; /* o auto si querés que se ajuste dinámicamente */
+    }
+    .select2-results {
+        display: inline-block !important;
+        width: 300px;
+    }
+    .select2-container--krajee-bs5{
+        display: inline-block !important;
+        width: 300px;
+    }
     .ingreso{
         margin-top: -14px; 
         font-family: "helvetica", arial, sens-serif;

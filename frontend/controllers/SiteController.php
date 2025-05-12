@@ -512,6 +512,7 @@ class SiteController extends Controller
         $categorias = $this->obtenerCategorias();
         $nombreCategoria = [];
         foreach ($categorias as $value) {
+            //var_dump($value); die();
             
             if ($value['tipo'] == '0') {
                 $tipo = 'Ingreso';    
