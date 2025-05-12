@@ -16,6 +16,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use frontend\models\Caja;
+use frontend\models\CajaSearch;
 use frontend\models\Categoria;
 
 /**
@@ -80,28 +81,93 @@ class SiteController extends Controller
         $modelCategoria = new Categoria();
         $modelCategorias = Categoria::find()->all();
 
-        $totales = [];
+
+        $periodos = $this->actionListaFechas();
+        //var_dump($periodos); die();
+
+        if (Yii::$app->request->post()) {
+
+            $periodoSelect = Yii::$app->request->post('periodo');
+            $anio = substr($periodoSelect, 0, 4); // Obtiene los primeros 4 caracteres (el año)
+            $mesActual = substr($periodoSelect, 5, 2);
+            //var_dump($mesActual); die();
+        }else{
+
+            $mesActual = date('m');
+            $anio = date('Y');
+            //var_dump($mesActual);    
+            $periodoSelect = $mesActual.'-'.$anio;
+        }
+        
+        $totalMesAct = [];
+        $totalGen = [];
         foreach($modelCategorias as $categoria){
             $categoriaArray = [];
+            $querySumMesAct = Caja::find()
+                ->select('SUM(monto) AS total')
+                ->where(['id_categoria' => $categoria['id'], 'tipo' => 0])
+                ->andWhere(['MONTH(fecha)' => $mesActual])
+                ->andWhere(['YEAR(fecha)' => $anio]);
+            $totalSumMesAct = $querySumMesAct->createCommand()->queryScalar();
+
+            $queryDifMesAct = Caja::find()
+                ->select('SUM(monto) AS total')
+                ->where(['id_categoria' => $categoria['id'], 'tipo' => 1])
+                ->andWhere(['MONTH(fecha)' => $mesActual])
+                ->andWhere(['YEAR(fecha)' => $anio]);
+            $totalDifMesAct = $queryDifMesAct->createCommand()->queryScalar();
+
+            $categoriaArray['categoria'] = $categoria['descripcion'];
+            $categoriaArray['Ingreso'] = $totalSumMesAct;
+            $categoriaArray['Egreso'] = $totalDifMesAct;
+            $categoriaArray['Saldo'] = $totalSumMesAct - $totalDifMesAct;
+            $totalMesAct[$categoria['descripcion']] = $categoriaArray;
+
+
+            $categoriaArrayGen = [];
             $querySum = Caja::find()
                 ->select('SUM(monto) AS total')
                 ->where(['id_categoria' => $categoria['id'], 'tipo' => 0]);
-            $totalSum= $querySum->createCommand()->queryScalar();
+            $totalSum = $querySum->createCommand()->queryScalar();
 
             $queryDif = Caja::find()
                 ->select('SUM(monto) AS total')
                 ->where(['id_categoria' => $categoria['id'], 'tipo' => 1]);
-            $totalDif= $queryDif->createCommand()->queryScalar();
+            $totalDif = $queryDif->createCommand()->queryScalar();
 
-            $categoriaArray['categoria'] = $categoria['descripcion'];
-            $categoriaArray['Ingreso'] = $totalSum;
-            $categoriaArray['Egreso'] = $totalDif;
-            $categoriaArray['Saldo'] = $totalSum - $totalDif;
-            $totales[$categoria['descripcion']] = $categoriaArray;
-            
+            $categoriaArrayGen['categoria'] = $categoria['descripcion'];
+            $categoriaArrayGen['Ingreso'] = $totalSum;
+            $categoriaArrayGen['Egreso'] = $totalDif;
+            $categoriaArrayGen['Saldo'] = $totalSum - $totalDif;
+            $totalGen[$categoria['descripcion']] = $categoriaArrayGen;      
         }
+
+        $ingresosMensuales = Caja::find()
+            ->select(['MONTH(fecha) AS mes', 'SUM(monto) AS total'])
+            ->where(['tipo' => 0]) // 0 para ingresos
+            //->andWhere(['tus_filtros']) // Agrega tus filtros
+            ->groupBy(['mes'])
+            ->asArray()
+            ->all();
+
+        $egresosMensuales = Caja::find()
+            ->select(['MONTH(fecha) AS mes', 'SUM(monto) AS total'])
+            ->where(['tipo' => 1]) // 1 para egresos
+            //->andWhere(['tus_filtros']) // Agrega tus filtros
+            ->groupBy(['mes'])
+            ->asArray()
+            ->all();
+
+            //var_dump($ingresosMensuales); die();
+
+
         return $this->render('index', [
-            'totales' => $totales,
+            'periodos' => $periodos,
+            'totales' => $totalMesAct,
+            'totalGen' => $totalGen,
+            'ingresos' => $ingresosMensuales,
+            'egresos' => $egresosMensuales,
+            'periodoSelect' => $periodoSelect
         ]);
 
     }
@@ -283,5 +349,190 @@ class SiteController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+    
+    public function actionBuscar()
+    {
+        $selectedMonth = Yii::$app->request->get('selectedMonth');
+        
+        // Validación de entrada y lógica de búsqueda
+        if ($selectedMonth) {
+            // Realizar una consulta a la base de datos, por ejemplo, utilizando Active Record de Yii:
+            $results = TuModelo::find()
+                ->where(['like', 'tuCampoFecha', '02-' . $selectedMonth])
+                ->all();
+            
+            // Haz algo con los resultados (por ejemplo, muestra una vista con los resultados)
+            return $this->render('resultados', ['results' => $results]);
+        } else {
+            // No se ha seleccionado un mes, puedes mostrar un mensaje de error o redirigir a otra página.
+        }
+    }
+    
+    public function actionListaFechas(){
+        $fechas = Caja::find()
+            ->select([
+                'MONTH(fecha) AS mes',
+                'YEAR(fecha) AS ano'
+            ])
+            ->distinct()
+            ->orderBy(['ano' => SORT_DESC, 'mes' => SORT_DESC]) // Opcional: Ordenar por año y mes
+            ->asArray()
+            ->all();
+
+        // Obtener un array de mes/año únicos sin repeticiones
+        $uniqueMonthsYears = array_map(
+            function ($item) {
+                return $item['ano'] . '-' . str_pad($item['mes'], 2, '0', STR_PAD_LEFT);
+            },
+            $fechas
+        );
+        $fechaConIndice = [];
+        foreach ($uniqueMonthsYears as $key) {
+            $fechaConIndice[$key] = $key;
+        }
+
+        //echo('<pre>');
+        //var_dump($fechaConIndice); die();
+        return $fechaConIndice;
+    }
+
+    public function actionGrafo()
+    {
+        $periodos = $this->actionListaFechas();
+        var_dump($periodos); die();
+
+        $gastosTaller='qwe';
+        // Obtener datos para el gráfico
+        $gastosTaller = Taller::find()->where(['tipo' => 'gasto'])->groupBy(['MONTH(fecha)'])->sum('monto');
+        $gastosHabituales = Taller::find()->where(['tipo' => 'gasto_habitual'])->groupBy(['MONTH(fecha)'])->sum('monto');
+        $ingresos = Taller::find()->where(['tipo' => 'ingreso'])->groupBy(['MONTH(fecha)'])->sum('monto');
+
+        // Convertir los datos a formato adecuado para el gráfico
+        $labels = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        $data = [
+            'Gastos de Taller' => array_values($gastosTaller),
+            'Gastos Habituales' => array_values($gastosHabituales),
+            'Ingresos' => array_values($ingresos),
+        ];
+
+        // Renderizar la vista con el gráfico
+        return $this->render('grafico', [
+            'labels' => $labels,
+            'data' => $data,
+        ]);
+    }
+    public function actionGrafico(){
+
+        $categorias = $this->obtenerCategorias();
+        $categoriasNombres = $this->obtenerNombreCategoria();
+        $periodos = $this->actionListaFechas();
+        
+       /*$elTodo =[];
+        foreach ($categorias as $cat) {
+            foreach ($periodos as $period) {
+
+                $anio = substr($period, 0, 4);
+                $mesActual = substr($period, 5, 2);
+                $totalPeriodo = Caja::find()
+                ->select('SUM(monto) AS total')
+                ->where(['id_categoria' => $cat['id_categoria'], 'tipo' => $cat['tipo']])
+                ->andWhere(['MONTH(fecha)' => $mesActual])
+                ->andWhere(['YEAR(fecha)' => $anio]);
+            }
+        }*/
+
+        $elTodo = [];
+        $contador = 0;
+        foreach ($categorias as $cat) {
+            $categoriaArray = [
+                'id_categoria' => $cat['id_categoria'],
+                'tipo' => $cat['tipo'],
+                'totales' => [],
+            ];
+
+            foreach ($periodos as $period) {
+                $anio = substr($period, 0, 4);
+                $mesActual = substr($period, 5, 2);
+
+                $totalPeriodo = Caja::find()
+                    ->select('SUM(monto) AS total')
+                    ->where(['id_categoria' => $cat['id_categoria'], 'tipo' => $cat['tipo']])
+                    ->andWhere(['MONTH(fecha)' => $mesActual])
+                    ->andWhere(['YEAR(fecha)' => $anio])
+                    ->scalar();
+
+                $categoriaArray['totales'][] = $totalPeriodo;
+            }
+
+            $elTodo[$categoriasNombres[$contador]] = $categoriaArray['totales'];
+            $contador=$contador +1;
+        }
+
+        /*echo('<pre>');
+        var_dump($elTodo);
+        echo('<pre>');
+        var_dump($categoriasNombres); die();*/
+        $data = [];
+        $labels = range(1, count(reset($elTodo))); // Suponiendo que hay el mismo número de períodos en cada categoría
+
+        foreach ($elTodo as $categoria => $totales) {
+            $dataset = [
+                'label' => $categoria,
+                'backgroundColor' => 'rgba(' . rand(0, 255) . ',' . rand(0, 255) . ',' . rand(0, 255) . ', 0.2)', // Colores aleatorios
+                'borderColor' => 'rgba(' . rand(0, 255) . ',' . rand(0, 255) . ',' . rand(0, 255) . ', 1)',
+                'borderWidth' => 2,
+                'data' => $totales,
+                'fill' => false,
+                'tension' => 0,
+            ];
+
+            $data['datasets'][] = $dataset;
+        }
+
+        $data['labels'] = $labels;
+
+        return $this->render('grafico', [
+            'labels' => $periodos,
+            'data' => $data,
+        ]);
+
+    }
+
+    private function obtenerCategorias(){
+        $combinacionesUnicas = Caja::find()
+            ->select(['id_categoria', 'tipo'])
+            ->distinct()
+            ->groupBy(['id_categoria', 'tipo'])
+            ->asArray()
+            ->all();
+        return $combinacionesUnicas;
+    }
+
+    private function obtenerNombreCategoria(){
+        $categorias = $this->obtenerCategorias();
+        $nombreCategoria = [];
+        foreach ($categorias as $value) {
+            //var_dump($value); die();
+            
+            if ($value['tipo'] == '0') {
+                $tipo = 'Ingreso';    
+            }
+            if ($value['tipo'] == '1') {
+                $tipo = 'Egreso';    
+            }
+            
+            $categoriaNombre = Categoria::findOne($value['id_categoria']);
+            if ($categoriaNombre !== null) {
+                $nomCat = $categoriaNombre->descripcion;
+                // Haz algo con $nombreCategoria
+            } else {
+                // Manejar el caso en el que no se encuentra la categoría con el ID dado
+                echo "Categoría no encontrada para el ID: $categoriaNombre";
+            }
+
+            $nombreCategoria[] =  $tipo.'-'.$nomCat;
+        } 
+        return $nombreCategoria;
     }
 }

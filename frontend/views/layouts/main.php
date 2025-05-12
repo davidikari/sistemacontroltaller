@@ -28,16 +28,27 @@ AppAsset::register($this);
 <header>
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => '<img src="img/Dalinda2.png" style="width: 250px; height: 70px; margin-left: -80px; margin-top: 10px;" >',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+            'class' => 'navbar navbar-expand-md navbar-white bg-white fixed-top edit',
         ],
     ]);
+
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => '', 'url' => ['/site/index']],
         ['label' => 'Cliente', 'url' => ['/cliente/index']],
         ['label' => 'Caja', 'url' => ['/caja/index']],
+        [
+            'label' => 'Ingreso',
+            'url' => ['caja/create', 'dato' => 0],
+            'options' => ['class' => 'btn custom-button', 'style' => 'background-color:  #58d68d; color: #ffffff;  border-radius: 5px; padding: 1px 10px; margin-right: 30px; margin-left: 570px; height: 40px;  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);']
+        ],
+        [
+            'label' => 'Egreso',
+            'url' => ['caja/create', 'dato' => 1],
+            'options' => ['class' => 'btn custom-button', 'style' => 'background-color:  #ec7063; color: #ffffff;  border-radius: 5px; padding: 1px 16px; margin-right: px;  height: 40px;  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);']
+        ],
     ];
    /* if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
@@ -61,24 +72,54 @@ AppAsset::register($this);
     ?>
 </header>
 
-<main role="main" class="flex-shrink-0">
+
+
+<main role="main" class="flex-shrink-0" style="margin-top: 80px;">
     <div class="container">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
         <?= Alert::widget() ?>
         <?= $content ?>
-    </div>
+    </div> 
+<div class="imagen-container">
+<img class="imagen" src="img/Dalinda0001.png">
+<style type="text/css">
+    .imagen-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    .imagen{
+        position: fixed;
+        top: 10px;
+        left: 680px;
+        z-index: -1;
+        width: 50%;
+        height: 100%;
+        opacity: 0.7;
+        transform: rotate(180deg);
+    }
+    .custom-font {
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 5px;
+        background-color: #4CAF50;
+        color: #fff;
+        text-decoration: none;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra del botón */
+        transition: background-color 0.3s ease; /* Transición para el cambio de color al pasar el cursor */
+    }
+    .custom-font:hover {
+        background-color: #45a049;
+    }
+</style>
+</div>
 </main>
-
-<footer class="footer mt-auto py-3 text-muted">
-    <div class="container">
-        <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p class="float-end"><?= Yii::powered() ?></p>
-    </div>
-</footer>
 
 <?php $this->endBody() ?>
 </body>
 </html>
 <?php $this->endPage();
+

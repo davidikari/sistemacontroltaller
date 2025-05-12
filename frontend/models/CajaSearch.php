@@ -49,6 +49,12 @@ class CajaSearch extends Caja
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => ['fecha' => SORT_DESC], // Ordenar por fecha de forma descendente por defecto
+            ],
+            'pagination' => [
+                'pageSize' => 20, // Número de elementos por página
+            ],
         ]);
 
         $this->load($params);

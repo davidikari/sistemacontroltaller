@@ -7,6 +7,7 @@ use frontend\models\ClienteSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use Yii;
 
 /**
  * ClienteController implements the CRUD actions for Cliente model.
@@ -131,4 +132,25 @@ class ClienteController extends Controller
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
+
+    public function actionBuscar($q = null)
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = [];
+
+        if (!is_null($q)) {
+            $clientes = \frontend\models\Cliente::find()
+                ->select(['id as id', "CONCAT(nombre, ' ', apellido) as text"])
+                ->where(['like', 'nombre', $q])
+                ->orWhere(['like', 'apellido', $q])
+                ->limit(20)
+                ->asArray()
+                ->all();
+
+            $out = $clientes;
+        }
+
+        return $out;
+    }
+
 }
