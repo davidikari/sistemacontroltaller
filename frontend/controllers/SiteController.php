@@ -496,7 +496,6 @@ class SiteController extends Controller
             'labels' => $periodos,
             'data' => $data,
         ]);
-
     }
 
     private function obtenerCategorias(){
