@@ -526,7 +526,6 @@ class SiteController extends Controller
             'anios' => $anios,
             'anioSeleccionado' => $anioSeleccionado
         ]);
-
     }
 
     private function obtenerCategorias(){
