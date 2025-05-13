@@ -1,7 +1,7 @@
 <?php 
 use dosamigos\chartjs\ChartJs;
 use yii\helpers\Html;
-
+use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $labels array */
 /* @var $data array */
@@ -10,6 +10,29 @@ $this->title = 'Grafico';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div style="background: white;">
+    <div>
+      <?php
+
+
+
+$this->title = 'Seleccionar período';
+?>
+
+<?php $form = ActiveForm::begin(); ?>
+
+<div class="form-group">
+    <?= Html::label('Periodo/Año', 'anio') ?>
+    <?= Html::dropDownList('anio', $anioSeleccionado, $anios, [
+        'class' => 'form-control',
+        'onchange' => 'this.form.submit();'
+    ]) ?>
+</div>
+
+<?php ActiveForm::end(); ?>
+
+<p>Año seleccionado: <strong><?= Html::encode($anioSeleccionado) ?></strong></p>
+
+    </div>
 <div class="site-grafico">
     <h1><?= Html::encode($this->title) ?></h1>
 

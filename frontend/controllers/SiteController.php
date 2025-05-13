@@ -427,7 +427,22 @@ class SiteController extends Controller
         $categorias = $this->obtenerCategorias();
         $categoriasNombres = $this->obtenerNombreCategoria();
         $periodos = $this->actionListaFechas();
+       // var_dump($periodos); die();
         
+        $periodosPorAnio = [];
+
+        foreach ($periodos as $key => $value) {
+            $anio = substr($key, 0, 4); // extrae '2024' de '2024-12'
+            if (!isset($periodosPorAnio[$anio])) {
+                $periodosPorAnio[$anio] = [];
+            }
+            $periodosPorAnio[$anio][$key] = $value;
+        }
+        $anioActual = date('Y');
+        $anioSeleccionado = Yii::$app->request->post('anio', $anioActual);
+        $periodosDelAnio = $periodosPorAnio[$anioSeleccionado] ?? [];
+
+
        /*$elTodo =[];
         foreach ($categorias as $cat) {
             foreach ($periodos as $period) {
@@ -442,6 +457,18 @@ class SiteController extends Controller
             }
         }*/
 
+        $anios = [];
+        foreach (array_keys($periodos) as $fecha) {
+            $anio = substr($fecha, 0, 4);
+            $anios[$anio] = $anio;
+        }
+        krsort($anios);
+        $anioDefault = array_key_first($anios);
+        $anioSeleccionado = Yii::$app->request->post('anio', $anioDefault);
+        $periodosFiltrados = array_filter($periodos, function($periodo) use ($anioSeleccionado) {
+            return strpos($periodo, $anioSeleccionado . '-') === 0;
+        });
+        //var_dump($periodosFiltrados); die();
         $elTodo = [];
         $contador = 0;
         foreach ($categorias as $cat) {
@@ -450,9 +477,10 @@ class SiteController extends Controller
                 'tipo' => $cat['tipo'],
                 'totales' => [],
             ];
-
+            $periodos = $periodosFiltrados;
             foreach ($periodos as $period) {
-                $anio = substr($period, 0, 4);
+                //$anio = substr($period, 0, 4);
+                $anio = $anioSeleccionado;
                 $mesActual = substr($period, 5, 2);
 
                 $totalPeriodo = Caja::find()
@@ -495,6 +523,8 @@ class SiteController extends Controller
         return $this->render('grafico', [
             'labels' => $periodos,
             'data' => $data,
+            'anios' => $anios,
+            'anioSeleccionado' => $anioSeleccionado
         ]);
 
     }
