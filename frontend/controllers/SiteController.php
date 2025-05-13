@@ -519,7 +519,6 @@ class SiteController extends Controller
         }
 
         $data['labels'] = $labels;
-
         return $this->render('grafico', [
             'labels' => $periodos,
             'data' => $data,
