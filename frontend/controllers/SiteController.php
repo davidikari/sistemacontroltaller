@@ -442,21 +442,6 @@ class SiteController extends Controller
         $anioSeleccionado = Yii::$app->request->post('anio', $anioActual);
         $periodosDelAnio = $periodosPorAnio[$anioSeleccionado] ?? [];
 
-
-       /*$elTodo =[];
-        foreach ($categorias as $cat) {
-            foreach ($periodos as $period) {
-
-                $anio = substr($period, 0, 4);
-                $mesActual = substr($period, 5, 2);
-                $totalPeriodo = Caja::find()
-                ->select('SUM(monto) AS total')
-                ->where(['id_categoria' => $cat['id_categoria'], 'tipo' => $cat['tipo']])
-                ->andWhere(['MONTH(fecha)' => $mesActual])
-                ->andWhere(['YEAR(fecha)' => $anio]);
-            }
-        }*/
-
         $anios = [];
         foreach (array_keys($periodos) as $fecha) {
             $anio = substr($fecha, 0, 4);
@@ -519,7 +504,6 @@ class SiteController extends Controller
         }
 
         $data['labels'] = $labels;
-
         return $this->render('grafico', [
             'labels' => $periodos,
             'data' => $data,
